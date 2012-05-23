@@ -1,0 +1,11 @@
+URxvt.font: xft:monospace:size=11
+#URxvt.font: 9x15
+#URxvt.font: xft:monaco:size=10
+
+URxvt.background: Black
+URxvt.foreground: White
+
+#clickable URLs
+URxvt.perl-ext-common:  default,matcher,clipboard
+URxvt.urlLauncher:      /usr/bin/firefox
+URxvt.matcher.button:   1

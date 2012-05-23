@@ -1,0 +1,12 @@
+# 
+# /etc/fstab: static file system information
+#
+# <file system>	<dir>	<type>	<options>	<dump>	<pass>
+tmpfs		/tmp	tmpfs	nodev,nosuid	0	0
+UUID=3c822a9f-423e-4354-891f-1c3deba08b36 /boot ext2 defaults 0 1
+UUID=5daf32de-6043-4a62-89da-8a0f5daba10d swap swap defaults 0 0
+UUID=b6159d3b-ad16-4bdc-a730-277cdadc0cce /home ext3 defaults 0 1
+UUID=d31684b0-2a3d-4081-b186-3abcb390561f / ext3 defaults 0 1
+/dev/sdb1  /mnt/usb1  vfat  noauto,user,umask=000  0  0
+/dev/sdc1  /mnt/usb2  vfat  noauto,user,umask=000  0  0
+/dev/sdd1  /mnt/usb3  vfat  noauto,user,umask=000  0  0
