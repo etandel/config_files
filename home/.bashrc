@@ -15,14 +15,13 @@ export PAGER='less'
 
 export NOOUT='/dev/null'
 
-export PATH=$PATH:/home/echobravo/Games/bin
+echo $PATH | fgrep Games >$NOOUT || \
+    export PATH=$PATH:/home/echobravo/Games/bin
 
 alias ls='ls --color=auto'
-alias la="ls -a"
+alias la="ls -A"
 alias ll="ls -l"
-alias lla="ls -la"
-
-alias cls="cd "
+alias lla="ls -lA"
 
 alias cu="cd .."
 alias cb="cd -"
@@ -43,6 +42,8 @@ source /home/echobravo/Programming/git-completion.bash
 alias vbox="vbox 2>/dev/null &"
 
 alias clip='xclip -sel clip'
+
+alias okular="okular 2>$NOOUT"
 
 # ---- Beginning of project stuff ----
 
