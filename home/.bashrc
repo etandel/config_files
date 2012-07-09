@@ -50,6 +50,11 @@ alias okular="okular 2>$NOOUT"
 export YMSIM='/home/echobravo/Projects/YMSim'
 alias cdymsim="cd $YMSIM"
 
-source /home/echobravo/Programming/tecgraf/tecmake/tec_uname.bsh
+source /home/echobravo/Programming/tecgraf/tecmake/tec_uname.bash
+
+
+#--------------------SIEVE-----------------
+source $(which virtualenvwrapper.sh)
+
 
 # ---- End of project stuff ----
