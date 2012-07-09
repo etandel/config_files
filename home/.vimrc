@@ -47,10 +47,11 @@ set smarttab
 set softtabstop=4
 set shiftwidth=4
 
-"noremap <Up> <nop>
-"noremap <Down> <nop>
-"noremap <Left> <nop>
-"noremap <Right> <nop>
+noremap <Up> <nop>
+noremap <Down> <nop>
+noremap <Left> <nop>
+noremap <Right> <nop>
+noremap <F1> <nop>
 
 set foldmethod=indent   "fold based on indent
 set foldlevel=1         
