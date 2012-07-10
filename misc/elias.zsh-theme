@@ -1,5 +1,5 @@
 PROMPT='%{$fg_bold[green]%}%n@%m ' # username@host
-PROMPT=${PROMPT}'%{$fg[cyan]%}%c ' # current dir
+PROMPT=${PROMPT}'%{$fg[cyan]%}%C ' # current dir
 PROMPT=${PROMPT}'%{$reset_color%}$(git_prompt_info) ' # git stuff
 PROMPT=${PROMPT}'%{$fg_bold[green]%}%# %{$reset_color%}' # prompt status and reset to normal color for command
 
