@@ -11,7 +11,7 @@ general {
 order += "disk /home"
 #order += "run_watch DHCP"
 #order += "run_watch VPN"
-order += "wireless eth1"
+order += "wireless wlan0"
 order += "ethernet eth0"
 #order += "battery 1" 
 #order += "cpu_temperature 0"
@@ -23,7 +23,7 @@ disk "/home" {
 	format = "%avail / %total"
 }
 
-wireless eth1 {
+wireless wlan0 {
         format_up = "W: (%quality at %essid) %ip"
         format_down = "W: down"
 }
