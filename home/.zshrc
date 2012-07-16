@@ -40,7 +40,7 @@ export LANG='en_US.UTF-8'
 export EDITOR='vim'
 export PAGER='less'
 
-alias -g NOOUT='/dev/null'
+export NOOUT='/dev/null'
 
 alias ls='ls --color=auto'
 alias la="ls -A"
