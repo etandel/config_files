@@ -77,6 +77,7 @@ alias cdymsim="cd $YMSIM"
 
 #--------------------SIEVE-----------------
 source $(which virtualenvwrapper.sh)
+alias cdsieve='source cdsieve.zsh'
 
 
 # ---- End of project stuff ----
