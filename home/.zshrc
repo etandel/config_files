@@ -70,14 +70,15 @@ alias clip='xclip -sel clip'
 alias okular="okular 2>$NOOUT"
 
 # ---- Beginning of project stuff ----
+source $(which virtualenvwrapper.sh)
 
 # ---- YMSIM ----
 export YMSIM='/home/echobravo/Projects/YMSim'
 alias cdymsim="cd $YMSIM"
 
 #--------------------SIEVE-----------------
-source $(which virtualenvwrapper.sh)
 alias cdwebtl='source cdwebtl.zsh'
-
+compctl -/ -W /home/echobravo/sieve/webtl cdwebtl.zsh
+alias zepper='mysql -h zepper.sieve.com.br -P 3306 -u elias -p'
 
 # ---- End of project stuff ----
