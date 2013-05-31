@@ -28,7 +28,7 @@ ZSH_THEME="elias"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git django python pip virtualenvwrapper archlinux)
+plugins=(git git-flow django python pip virtualenvwrapper archlinux lua luarocks)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -69,6 +69,30 @@ alias clip='xclip -sel clip'
 
 alias okular="okular 2>$NOOUT"
 
+alias pycharm="echo -e \n | /opt/pycharm/bin/pycharm.sh"
+
+alias untar="tar xvf"
+
+# manopt cmd opt -> prints the -opt description from `man cmd` 
+manopt(){
+    man $1 | sed 's/.\x08//g'| sed -n "/^\s\+-\+$2\b/,/^\s*$/p" | sed '$d;';
+}
+
+#xgh quote of the day
+xghfortune(){
+    if [[ -f $1 ]]; then
+        cat $1
+    else
+        curl -s 'http://xgh.herokuapp.com/' | w3m -T text/html | grep '^[0-9]\+\-'
+    fi | sort -R | head -n 1
+}
+
+#quote xgh if it's a login shell
+if [[ -o login ]]; then
+    echo "\nXGH quote of the the day: \"$(xghfortune /usr/local/share/xghquotes.txt)\""
+fi
+
+
 # ---- Beginning of project stuff ----
 source $(which virtualenvwrapper.sh)
 
@@ -76,9 +100,8 @@ source $(which virtualenvwrapper.sh)
 export YMSIM='/home/echobravo/Projects/YMSim'
 alias cdymsim="cd $YMSIM"
 
-#--------------------SIEVE-----------------
-alias cdwebtl='source cdwebtl.zsh'
-compctl -/ -W /home/echobravo/sieve/webtl cdwebtl.zsh
-alias zepper='mysql -h zepper.sieve.com.br -P 3306 -u elias -p'
+#----- SIEVE ----
+source ~/sieve/sieve_confs.zsh
 
 # ---- End of project stuff ----
+
