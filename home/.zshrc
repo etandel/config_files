@@ -28,12 +28,12 @@ ZSH_THEME="elias"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git git-flow django python pip virtualenvwrapper archlinux lua luarocks)
+plugins=(git git-flow django python pip virtualenvwrapper archlinux lua luarocks rust)
 
 source $ZSH/oh-my-zsh.sh
 
 # Customize to your needs...
-export PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/cuda-toolkit/bin:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/echobravo/Games/bin
+export PATH=~/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/cuda-toolkit/bin:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/echobravo/Games/bin
 
 export LANG='en_US.UTF-8'
 
@@ -61,8 +61,6 @@ alias wcsnapshot="mplayer tv:// -tv driver=v4l2:width=640:height=480:device=/dev
 
 alias i3lock="i3lock -c 000000"
 
-source /home/echobravo/Programming/git-completion.bash
-
 alias vbox="vbox 2>/dev/null &"
 
 alias clip='xclip -sel clip'
@@ -72,6 +70,19 @@ alias okular="okular 2>$NOOUT"
 alias pycharm="echo -e \n | /opt/pycharm/bin/pycharm.sh"
 
 alias untar="tar xvf"
+
+alias vim=gvim
+
+
+# change backlight to $1 * 100
+chlight(){
+    if [[ -n $1 ]]; then
+        local val=$(lua -e "print(math.floor(100 * $1))")
+        sudo tee /sys/class/backlight/intel_backlight/brightness <<< $val
+    else
+        cat /sys/class/backlight/intel_backlight/brightness
+    fi
+}
 
 # manopt cmd opt -> prints the -opt description from `man cmd` 
 manopt(){
@@ -93,15 +104,27 @@ if [[ -o login ]]; then
 fi
 
 
+git-delete() { git branch -d $1 && git push origin :$1 }
+
+
+mkpymod () {
+	mkdir -p $1 && touch $1/__init__.py
+}
+
+
+clipclr() {
+    echo | clip
+    echo | clip -sel prim
+}
+
+
+# don't let python create __pycache__ or pyc files
+export PYTHONDONTWRITEBYTECODE=1
+
+
+source ~/proj/luarocks-venv/lvenv.sh
+
+
 # ---- Beginning of project stuff ----
-source $(which virtualenvwrapper.sh)
-
-# ---- YMSIM ----
-export YMSIM='/home/echobravo/Projects/YMSim'
-alias cdymsim="cd $YMSIM"
-
-#----- SIEVE ----
-source ~/sieve/sieve_confs.zsh
 
 # ---- End of project stuff ----
-

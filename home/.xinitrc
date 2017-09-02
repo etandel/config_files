@@ -1,5 +1,8 @@
 #!/bin/sh
 
+xrandr --setprovideroutputsource modesetting NVIDIA-0
+xrandr --auto
+
 userresources=$HOME/.Xresources
 usermodmap=$HOME/.Xmodmap
 sysresources=/etc/X11/xinit/.Xresources
@@ -36,6 +39,7 @@ if [ -f ~/.Xresources ]; then
 fi
 
 # start window manager / GDE
-exec i3 --force-xinerama
+mv ~/.log/i3.log{,.old}
+exec i3 -V > ~/.log/i3.log 2>&1
 #exec subtle
 #exec ck-launch-session startxfce4

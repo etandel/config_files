@@ -25,6 +25,8 @@ Plugin 'lervag/vimtex'
 
 Plugin 'raichoo/purescript-vim'
 
+Plugin 'ElmCast/elm-vim'
+
 Plugin 'jnurmine/Zenburn'
 Plugin 'altercation/vim-colors-solarized'
 call vundle#end()            " required
@@ -68,6 +70,27 @@ let g:ycm_autoclose_preview_window_after_completion=1
 map <leader>g  :YcmCompleter GoTo<CR>
 map <leader>r  :YcmCompleter GoToReferences<CR>
 let g:ycm_rust_src_path = '/home/etandel/proj/rust/src'
+let g:ycm_semantic_triggers = {
+     \ 'elm' : ['.'],
+     \}
+
+
+"Elm
+let g:elm_jump_to_error = 0
+let g:elm_make_output_file = "elm.js"
+"let g:elm_make_show_warnings = 1
+let g:elm_syntastic_show_warnings = 1
+let g:elm_setup_keybindings = 0
+"let g:elm_browser_command = ""
+let g:elm_detailed_complete = 1
+let g:elm_format_autosave = 0
+let g:elm_format_fail_silently = 0
+
+map <leader>m  :ElmMake<CR>
+map <leader>r  :ElmRepl<CR>
+map <leader>e  :ElmErrorDetail<CR>
+map <leader>s  :ElmShowDocs<CR>
+map <leader>f  :ElmFormat<CR>
 
 "work around so .rs files are detected as rust instead of hercules (wtf?)
 au BufRead,BufNewFile *.rs set filetype=rust
