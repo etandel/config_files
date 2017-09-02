@@ -8,6 +8,10 @@
 # i3 config file (v4)
 #
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
+#
+
+# uncomment next line for a multimonitor settings with an older nvidia driver
+# force_xinerama yes
 
 set $mod Mod4
 
@@ -23,10 +27,13 @@ floating_modifier $mod
 bindsym $mod+Return exec --no-startup-id i3-sensible-terminal
 
 #start browser
-bindsym $mod+b exec firefox && ([ -d /home/echobravo/Desktop ] && rm -r /home/echobravo/Desktop)
+bindsym $mod+b exec firefox && ([ -d /home/etandel/Desktop ] && rm -r /home/etandel/Desktop) && ([ -d /home/etandel/Downloads ] && rm -r /home/etandel/Downloads)
+
+#start gvim
+bindsym $mod+g exec gvim
 
 #start screen locker
-bindsym $mod+Shift+s exec i3lock -d -c000000
+bindsym $mod+Shift+s exec ~/Documents/images/mylock.zsh
 
 # kill focused window
 bindsym $mod+Shift+Q kill
@@ -159,4 +166,5 @@ bindsym $mod+r mode "resize"
 # finds out, if available)
 bar {
 	status_command i3status
+    font pango:DejaVu Sans
 }

@@ -11,9 +11,9 @@ general {
 order += "disk /home"
 #order += "run_watch DHCP"
 #order += "run_watch VPN"
-order += "wireless wlan0"
-order += "ethernet eth0"
-#order += "battery 1" 
+order += "wireless wlp6s0"
+order += "ethernet enp7s0"
+order += "battery 0"
 #order += "cpu_temperature 0"
 order += "cpu_usage"
 #order += "load"
@@ -23,20 +23,31 @@ disk "/home" {
 	format = "%avail / %total"
 }
 
-wireless wlan0 {
+wireless wlp6s0 {
         format_up = "W: (%quality at %essid) %ip"
         format_down = "W: down"
 }
 
-ethernet eth0 {
+ethernet enp7s0 {
         # if you use %speed, i3status requires root privileges
         format_up = "E: %ip (%speed)"
 	format_down = "E: down"
 }
 
-battery 1 {
-        path = "/sys/class/power_supply/BAT%d"
+battery 0 {
+        path = "/sys/class/power_supply/BAT%d/uevent"
         format = "%status %percentage %remaining"
+        hide_seconds = true
+        integer_battery_capacity = true
+        low_threshold = 10
+        threshold_type = percentage
+
+# this is supposed to be a lightning symbol
+        status_full = "⚡"
+#this is supposed to be a battery symbol
+        status_bat = "🔋"
+# this is supposed to be a power plug symbol
+        status_chr = "🔌"
 }
 
 run_watch DHCP {
@@ -60,5 +71,5 @@ load {
 }
 
 time {
-	format = "%a %d/%m/%Y %H:%M"
+	format = "%a %Y-%m-%d %H:%M"
 }
