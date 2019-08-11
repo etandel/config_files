@@ -13,6 +13,7 @@ Plugin 'scrooloose/nerdtree'
 Plugin 'scrooloose/syntastic'
 Plugin 'wincent/command-t'
 Plugin 'tpope/vim-pathogen'
+Plugin 'tpope/vim-surround'
 
 Plugin 'vim-scripts/indentpython.vim'
 Plugin 'nvie/vim-flake8'
@@ -21,11 +22,21 @@ Plugin 'rust-lang/rust.vim'
 
 Bundle 'leafo/moonscript-vim'
 
+Plugin 'rhysd/vim-gfm-syntax'
+
+"html/css
+Plugin 'mattn/emmet-vim'
+Plugin 'othree/html5.vim'
+
 Plugin 'lervag/vimtex'
 
 Plugin 'raichoo/purescript-vim'
 
 Plugin 'ElmCast/elm-vim'
+
+"elixir
+Plugin 'elixir-editors/vim-elixir'
+Plugin 'slashmili/alchemist.vim'
 
 Plugin 'jnurmine/Zenburn'
 Plugin 'altercation/vim-colors-solarized'
@@ -65,6 +76,9 @@ EOF
 map <C-n> :NERDTreeToggle<CR>
 let NERDTreeIgnore=['\.pyc$', '\~$']
 
+"Command-T
+let g:CommandTWildIgnore=&wildignore . ",*/bower_components,*/node_modules"
+
 "YouCompleteMe
 let g:ycm_autoclose_preview_window_after_completion=1
 map <leader>g  :YcmCompleter GoTo<CR>
@@ -86,11 +100,26 @@ let g:elm_detailed_complete = 1
 let g:elm_format_autosave = 0
 let g:elm_format_fail_silently = 0
 
-map <leader>m  :ElmMake<CR>
-map <leader>r  :ElmRepl<CR>
-map <leader>e  :ElmErrorDetail<CR>
-map <leader>s  :ElmShowDocs<CR>
-map <leader>f  :ElmFormat<CR>
+
+"Elixir
+let g:alchemist_tag_map = '<leader>g'
+"let g:alchemist_tag_stack_map = '<leader>t'
+let g:alchemist#elixir_erlang_src = "/home/etandel/proj"
+
+autocmd FileType elm nnoremap <buffer> <leader>m  :ElmMake<CR>
+autocmd FileType elm nnoremap <buffer> <leader>r  :ElmRepl<CR>
+autocmd FileType elm nnoremap <buffer> <leader>e  :ElmErrorDetail<CR>
+autocmd FileType elm nnoremap <buffer> <leader>s  :ElmShowDocs<CR>
+autocmd FileType elm nnoremap <buffer> <leader>f  :ElmFormat<CR>
+
+
+"emmit
+let g:user_emmet_install_global = 0
+autocmd FileType html,css EmmetInstall
+
+
+"gfm 
+let g:markdown_fenced_languages = ['json', 'python']
 
 "work around so .rs files are detected as rust instead of hercules (wtf?)
 au BufRead,BufNewFile *.rs set filetype=rust
@@ -99,7 +128,7 @@ if has('gui_running')
     set guioptions-=m  "remove menu bar
     set guioptions-=T  "remove menu bar
     set background=dark
-    set guifont=Inconsolata\ 14
+    set guifont=Inconsolata\ 11
     colorscheme solarized
 else
     colorscheme zenburn
