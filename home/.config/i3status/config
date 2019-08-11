@@ -13,7 +13,7 @@ order += "disk /home"
 #order += "run_watch VPN"
 order += "wireless wlp6s0"
 order += "ethernet enp7s0"
-order += "battery 0"
+order += "battery 0" 
 #order += "cpu_temperature 0"
 order += "cpu_usage"
 #order += "load"
@@ -42,12 +42,11 @@ battery 0 {
         low_threshold = 10
         threshold_type = percentage
 
-# this is supposed to be a lightning symbol
         status_full = "⚡"
-#this is supposed to be a battery symbol
         status_bat = "🔋"
-# this is supposed to be a power plug symbol
+#        # this is supposed to be a powe plug sign
         status_chr = "🔌"
+        
 }
 
 run_watch DHCP {
