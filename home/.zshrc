@@ -28,12 +28,19 @@ ZSH_THEME="elias"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git git-flow django python pip virtualenvwrapper archlinux lua luarocks rust)
+
+WORKON_HOME=$HOME/.virtualenvs
+
+export GOPATH="$HOME/go"
+export PYENV_ROOT="$HOME/proj/pyenv"
+
+plugins=(git git-flow django python pip virtualenvwrapper pyenv archlinux lua luarocks rust cargo go golang kubectl helm)
 
 source $ZSH/oh-my-zsh.sh
 
-# Customize to your needs...
-export PATH=~/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/cuda-toolkit/bin:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/echobravo/Games/bin
+fpath+="~/.zfunc"
+
+export PATH="$PYENV_ROOT/bin:~/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/cuda-toolkit/bin:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/echobravo/Games/bin:$GOPATH/bin"
 
 export LANG='en_US.UTF-8'
 
@@ -47,15 +54,7 @@ alias la="ls -A"
 alias ll="ls -l"
 alias lla="ls -lA"
 
-alias cu="cd .."
-alias cb="cd -"
-
-alias lunit="/home/echobravo/Programming/lunit-0.5/lunit -p '/home/echobravo/Programming/lunit-0.5/?.lua' "
-alias lunitjit="/home/echobravo/Programming/lunit-0.5/lunit -p '/home/echobravo/Programming/lunit-0.5/?.lua' -i '/usr/bin/luajit'"
-
 alias wicd-curses='wicd-curses && clear'
-
-alias iluajit2="luajit -e\"package.path=package.path..';/home/echobravo/Programming/ILuaJIT/?.lua'\"  /home/echobravo/Programming/ILuaJIT/iluajit.lua"
 
 alias wcsnapshot="mplayer tv:// -tv driver=v4l2:width=640:height=480:device=/dev/video0 -fps 15 -vf screenshot"
 
@@ -65,13 +64,13 @@ alias vbox="vbox 2>/dev/null &"
 
 alias clip='xclip -sel clip'
 
-alias okular="okular 2>$NOOUT"
-
 alias pycharm="echo -e \n | /opt/pycharm/bin/pycharm.sh"
 
 alias untar="tar xvf"
 
 alias vim=gvim
+
+alias -g -- '--foda-se=--force'
 
 
 # change backlight to $1 * 100
@@ -117,14 +116,40 @@ clipclr() {
     echo | clip -sel prim
 }
 
+switchnetwork() {
+    if netctl list | fgrep '* cell' >/dev/null; then
+        sudo netctl switch-to casa
+    else
+        sudo netctl switch-to cell
+    fi
+}
+
+
+git-chg-date() {
+    YEAR="$1"
+    MONTH="$2"
+    DAY="$3"
+    TIME="$4"
+    DATE="$MONTH $DAY $TIME:${(l:2::0:)$(shuf -i 1-59 -n 1)} $YEAR -0300"
+    GIT_COMMITER_DATE="$DATE" git commit --amend --date="$DATE"
+}
+
+count-words() {
+    sed 's/[\/.,]/ /g' $@ | wc -w
+}
 
 # don't let python create __pycache__ or pyc files
 export PYTHONDONTWRITEBYTECODE=1
 
-
-source ~/proj/luarocks-venv/lvenv.sh
+#source ~/proj/luarocks-venv/lvenv.sh
 
 
 # ---- Beginning of project stuff ----
+
+ONYO_RC=~/onyo/src/onyorc.sh
+
+if [[ -f $ONYO_RC ]]; then
+    source $ONYO_RC
+fi
 
 # ---- End of project stuff ----
