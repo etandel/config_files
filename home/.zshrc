@@ -1,51 +1,71 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-# Path to your oh-my-zsh configuration.
+# If you come from bash you might have to change your $PATH.
+# export PATH=$HOME/bin:/usr/local/bin:$PATH
+
+# Path to your oh-my-zsh installation.
 ZSH=$HOME/.oh-my-zsh
 
-# Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
-# Optionally, if you set this to "random", it'll load a random theme each
-# time that oh-my-zsh is loaded.
-ZSH_THEME="elias"
+# Set name of the theme to load --- if set to "random", it will
+# load a random theme each time oh-my-zsh is loaded, in which case,
+# to know which specific one was loaded, run: echo $RANDOM_THEME
+# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+#ZSH_THEME="robbyrussell"
+ZSH_THEME="etandel"
 
-# Set to this to use case-sensitive completion
-# CASE_SENSITIVE="true"
+# Set list of themes to pick from when loading at random
+# Setting this variable when ZSH_THEME=random will cause zsh to load
+# a theme from this variable instead of looking in $ZSH/themes/
+# If set to an empty array, this variable will have no effect.
+# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
 
-# Comment this out to disable weekly auto-update checks
-# DISABLE_AUTO_UPDATE="true"
+HYPHEN_INSENSITIVE="true"
 
-# Uncomment following line if you want to disable colors in ls
-# DISABLE_LS_COLORS="true"
-
-# Uncomment following line if you want to disable autosetting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment following line if you want red dots to be displayed while waiting for completion
-# COMPLETION_WAITING_DOTS="true"
-
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
+ASDF_DIR='/opt/asdf-vm'
 
 WORKON_HOME=$HOME/.virtualenvs
 
-export GOPATH="$HOME/go"
+#export GOPATH="$HOME/go"
 export PYENV_ROOT="$HOME/proj/pyenv"
+[[ -s "$HOME/.gvm/scripts/gvm" ]] && source "$HOME/.gvm/scripts/gvm"
 
-plugins=(git git-flow django python pip virtualenvwrapper pyenv archlinux lua luarocks rust cargo go golang kubectl helm)
+export PATH="$HOME/.local/share/gem/ruby/2.7.0/bin:$HOME/.poetry/bin:$HOME/.cargo/bin:$HOME/.gvm/bin:$PYENV_ROOT/shims:$HOME/.local/bin:/usr/local/bin:/usr/games:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:"
+
+plugins=(
+    archlinux
+    git
+    python
+    pip
+    pyenv
+    rust
+    golang
+    kubectl
+    helm
+    terraform
+    aws
+    docker
+    docker-compose
+    mix
+    pass
+    asdf
+)
 
 source $ZSH/oh-my-zsh.sh
 
+unsetopt autocd
+
 fpath+="~/.zfunc"
 
-export PATH="$PYENV_ROOT/bin:~/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/cuda-toolkit/bin:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/echobravo/Games/bin:$GOPATH/bin"
 
-export LANG='en_US.UTF-8'
+export LANG='en_GB.UTF-8'
 
-export EDITOR='vim'
+export EDITOR='nvim'
 export PAGER='less'
+export LESS='--RAW-CONTROL-CHARS --quit-if-one-screen'
+
+# use bat as man colorizer if it is installed
+command -v bat >/dev/null 2>&1 && export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 
 export NOOUT='/dev/null'
 
@@ -54,9 +74,7 @@ alias la="ls -A"
 alias ll="ls -l"
 alias lla="ls -lA"
 
-alias wicd-curses='wicd-curses && clear'
-
-alias wcsnapshot="mplayer tv:// -tv driver=v4l2:width=640:height=480:device=/dev/video0 -fps 15 -vf screenshot"
+alias wcsnapshot="mplayer tv:// -tv driver=v4l2:width=640:height=480:device=/dev/video0 -frames 1 -vo jpeg"
 
 alias i3lock="i3lock -c 000000"
 
@@ -64,11 +82,11 @@ alias vbox="vbox 2>/dev/null &"
 
 alias clip='xclip -sel clip'
 
-alias pycharm="echo -e \n | /opt/pycharm/bin/pycharm.sh"
-
 alias untar="tar xvf"
 
-alias vim=gvim
+alias vim=nvim
+
+alias ndvim="neovide --maximized"
 
 alias -g -- '--foda-se=--force'
 
@@ -98,12 +116,25 @@ xghfortune(){
 }
 
 #quote xgh if it's a login shell
-if [[ -o login ]]; then
-    echo "\nXGH quote of the the day: \"$(xghfortune /usr/local/share/xghquotes.txt)\""
-fi
+#if [[ -o login ]]; then
+#    echo "\nXGH quote of the the day: \"$(xghfortune /usr/local/share/xghquotes.txt)\""
+#fi
 
 
-git-delete() { git branch -d $1 && git push origin :$1 }
+git-delete() {
+    git branch -d "$@" &&  \
+        echo "$@" | xargs -n 1 git push --delete origin &&
+}
+
+git-delete-all-merged() {
+    branches=$(git branch --me | \
+        egrep -v 'master|develop|main|\*' | \
+        tr '\n' ' '
+    )
+    git-delete ${=branches}
+
+    git remote prune origin
+}
 
 
 mkpymod () {
@@ -124,13 +155,12 @@ switchnetwork() {
     fi
 }
 
-
 git-chg-date() {
     YEAR="$1"
     MONTH="$2"
     DAY="$3"
     TIME="$4"
-    DATE="$MONTH $DAY $TIME:${(l:2::0:)$(shuf -i 1-59 -n 1)} $YEAR -0300"
+    DATE="$MONTH $DAY $TIME:${(l:2::0:)$(shuf -i 1-59 -n 1)} $YEAR +0200"
     GIT_COMMITER_DATE="$DATE" git commit --amend --date="$DATE"
 }
 
@@ -138,18 +168,55 @@ count-words() {
     sed 's/[\/.,]/ /g' $@ | wc -w
 }
 
+viclean() { find ${1:-.} -name '.*.sw?' -delete }
+
+
+has_conflict() {
+    rg '<<<|>>>|===='
+}
+
+alias frg='rg -F'
+
+retry () {
+	while ! $@
+	do
+		sleep 1
+	done
+}
+
+rot13(){
+    tr 'A-Za-z' 'N-ZA-Mn-za-m'
+}
+
+pass-push() {
+    pass git push origin master
+}
+
+pass-pull() {
+    pass git pull origin
+}
+
+
+alrm() {
+  ( \speaker-test --frequency $1 --test sine )&
+  pid=$!
+  \sleep ${2}s
+  \kill -9 $pid
+}
+
+
 # don't let python create __pycache__ or pyc files
 export PYTHONDONTWRITEBYTECODE=1
 
 #source ~/proj/luarocks-venv/lvenv.sh
 
 
+# gvm
+[[ -s "/home/etandel/.gvm/scripts/gvm" ]] && source "/home/etandel/.gvm/scripts/gvm"
+
 # ---- Beginning of project stuff ----
 
-ONYO_RC=~/onyo/src/onyorc.sh
-
-if [[ -f $ONYO_RC ]]; then
-    source $ONYO_RC
-fi
+FRAMENRC="$HOME/framen/src/framenrc.zsh"
+[[ -s "$FRAMENRC" ]] && source "$FRAMENRC"
 
 # ---- End of project stuff ----
