@@ -9,9 +9,10 @@ general {
 
 #order += "ipv6"
 order += "disk /home"
+order += "disk /"
 #order += "run_watch DHCP"
 #order += "run_watch VPN"
-order += "wireless wlp6s0"
+order += "wireless wlan0"
 order += "ethernet enp7s0"
 order += "battery 0" 
 #order += "cpu_temperature 0"
@@ -19,11 +20,15 @@ order += "cpu_usage"
 #order += "load"
 order += "time"
 
-disk "/home" {
-	format = "%avail / %total"
+disk "/" {
+	format = "/: %avail"
 }
 
-wireless wlp6s0 {
+disk "/home" {
+	format = "/home: %avail"
+}
+
+wireless wlan0 {
         format_up = "W: (%quality at %essid) %ip"
         format_down = "W: down"
 }
