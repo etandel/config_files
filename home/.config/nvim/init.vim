@@ -1,6 +1,8 @@
-"set runtimepath^=~/.vim runtimepath+=~/.vim/after
+"SET RUNTIMEPATH^=~/.VIM RUNTIMEPATH+=~/.VIM/AFTER
 "let &packpath = &runtimepath
 "source ~/.vimrc
+
+"let mapleader = '\'
 
 filetype off                  " required by vundle?
 " set the runtime path to include Vundle and initialize
@@ -11,6 +13,7 @@ call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 
 Plugin 'neovim/nvim-lsp'
+Plugin 'tamago324/nlsp-settings.nvim'  " allows for local per-project settings
 
 "Plugin 'tmhedberg/SimpylFold'
 "Plugin 'Valloric/YouCompleteMe'
@@ -94,7 +97,13 @@ noremap <Left> <nop>
 noremap <Right> <nop>
 noremap <F1> <nop>
 
-if has('gui_running')
+if exists('g:neovide')
+    "set guifont=Inconsolata\ 12
+    set guifont=JetBrains_Mono:h8
+    colorscheme sonokai
+    let g:neovide_remember_window_size = v:false
+    let g:neovide_scale_factor = 1.0
+elseif has('gui_running')
     set guioptions-=m  "remove menu bar
     set guioptions-=T  "remove menu bar
     set background=dark
@@ -104,11 +113,6 @@ if has('gui_running')
     "colorscheme solarized
     "colorscheme NeoSolarized
     colorscheme sonokai
-elseif exists('g:neovide')
-    "set guifont=Inconsolata\ 12
-    set guifont=JetBrains_Mono:h8
-    colorscheme sonokai
-    let g:neovide_remember_window_size = v:false
 else
     "colorscheme zenburn
     "colorscheme nord
@@ -139,12 +143,23 @@ filetype plugin on
 "let python_highlight_all=1
 let g:python3_host_prog = '/usr/bin/python3'
 
+" Golang stuff
+autocmd Filetype go setlocal noexpandtab tabstop=4 shiftwidth=4
+autocmd Filetype proto setlocal noexpandtab tabstop=4 shiftwidth=4
+
 "NerdTree
 map <C-n> :NERDTreeToggle<CR>
 let NERDTreeIgnore=['\.pyc$', '\~$']
 
 "Command-T
 let g:CommandTWildIgnore=&wildignore . ",*/bower_components,*/node_modules,*/target,*/_build,*/deps,venv,__pycache__"
+let g:CommandTPreferredImplementation='lua'
+
+lua << EOF
+vim.keymap.set('n', '<Leader>b', '<Plug>(CommandTBuffer)')
+vim.keymap.set('n', '<Leader>j', '<Plug>(CommandTJump)')
+vim.keymap.set('n', '<Leader>t', '<Plug>(CommandT)')
+EOF
 
 
 " dhall
@@ -174,8 +189,19 @@ au BufRead,BufNewFile *.rs set filetype=rust
 au BufRead,BufNewFile *.ex,*.exs set filetype=elixir
 
 "lsp and coq
+
+
 lua << EOF
 --vim.lsp.set_log_level("debug")
+
+local nlspsettings = require("nlspsettings")
+nlspsettings.setup({
+  config_home = vim.fn.stdpath('config') .. '/nlsp-settings',
+  local_settings_dir = ".nlsp-settings",
+  local_settings_root_markers_fallback = { '.git' },
+  append_default_schemas = true,
+  loader = 'json'
+})
 
 vim.g.coq_settings = {auto_start = "shut-up"}
 local coq = require("coq")
@@ -189,28 +215,23 @@ local on_attach = function(client, bufnr)
 
   -- Mappings.
   local opts = { noremap=true, silent=true }
-  buf_set_keymap('n', '<leader>G', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  buf_set_keymap('n', '<leader>g', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
-  buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  -- buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-  -- buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-  -- buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-  buf_set_keymap('n', '<leader>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  buf_set_keymap('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  buf_set_keymap('n', '<leader>R', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', '<leader>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
-  buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
-  buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap('n', '<leader>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
+  vim.keymap.set('n', '<leader>G', vim.lsp.buf.declaration, opts)
+  vim.keymap.set('n', '<leader>g', vim.lsp.buf.definition, opts)
+  vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+  vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+  vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+  -- buf_set_keymap('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
+  -- buf_set_keymap('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
+  vim.keymap.set('n', '<space>wl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, opts)
+  vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, opts)
+  vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
+  vim.keymap.set('n', '<leader>R', vim.lsp.buf.references, opts)
+  vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, opts)
+  vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
+  vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
+  vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, opts)
 
-  -- Set some keybinds conditional on server capabilities
-  if client.resolved_capabilities.document_formatting then
-    buf_set_keymap("n", "<leader>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-  elseif client.resolved_capabilities.document_range_formatting then
-    buf_set_keymap("n", "<leader>f", "<cmd>lua vim.lsp.buf.range_formatting()<CR>", opts)
-  end
+  vim.keymap.set("n", "<leader>f", function() vim.lsp.buf.format {async = true} end, opts)
 
   -- Set autocommands conditional on server_capabilities
   -- if client.resolved_capabilities.document_highlight then
@@ -232,7 +253,7 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 
 -- Use a loop to conveniently both setup defined servers 
 -- and map buffer local keybindings when the language server attaches
-local servers = { "pyright", "rust_analyzer", "tsserver", "gopls", "dhall_lsp_server"}
+local servers = {"pyright", "rust_analyzer", "tsserver", "gopls", "dhall_lsp_server"}
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup(coq.lsp_ensure_capabilities{on_attach = on_attach, capabilities=capabilities})
 end
@@ -244,6 +265,7 @@ require'lspconfig'.elixirls.setup(
         cmd = { "/home/etandel/sw/elixir-ls/language_server.sh" },
     }
 )
+
 EOF
 
 " completion-nvim
