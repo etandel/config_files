@@ -26,29 +26,21 @@ ASDF_DIR='/opt/asdf-vm'
 
 WORKON_HOME=$HOME/.virtualenvs
 
-#export GOPATH="$HOME/go"
 export PYENV_ROOT="$HOME/proj/pyenv"
 [[ -s "$HOME/.gvm/scripts/gvm" ]] && source "$HOME/.gvm/scripts/gvm"
 
-export PATH="$HOME/.local/share/gem/ruby/2.7.0/bin:$HOME/.poetry/bin:$HOME/.cargo/bin:$HOME/.gvm/bin:$PYENV_ROOT/shims:$HOME/.local/bin:/usr/local/bin:/usr/games:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:"
+export PATH="$HOME/go/bin:$HOME/.yarn/bin:$HOME/.local/share/gem/ruby/2.7.0/bin:$HOME/.poetry/bin:$HOME/.cargo/bin:$PYENV_ROOT/shims:$HOME/.local/bin:/usr/local/bin:/usr/games:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:"
 
 plugins=(
     archlinux
     git
-    python
-    pip
-    pyenv
-    rust
     golang
     kubectl
-    helm
-    terraform
     aws
     docker
     docker-compose
-    mix
     pass
-    asdf
+    nvm
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -65,9 +57,11 @@ export PAGER='less'
 export LESS='--RAW-CONTROL-CHARS --quit-if-one-screen'
 
 # use bat as man colorizer if it is installed
-command -v bat >/dev/null 2>&1 && export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+command -v bat >/dev/null 2>&1 && export MANPAGER="sh -c 'col -bx | bat -l man -p'" && export MANROFFOPT='-c'
 
 export NOOUT='/dev/null'
+
+export NODE_OPTIONS='--openssl-legacy-provider'
 
 alias ls='ls --color=auto'
 alias la="ls -A"
@@ -123,7 +117,7 @@ xghfortune(){
 
 git-delete() {
     git branch -d "$@" &&  \
-        echo "$@" | xargs -n 1 git push --delete origin &&
+        echo "$@" | xargs -n 1 git push --delete origin
 }
 
 git-delete-all-merged() {
@@ -196,6 +190,19 @@ pass-pull() {
     pass git pull origin
 }
 
+# shows first occurrence of field name $2 in pass file $1.
+# if field is not passed, shows pwd
+pass-show-field() {
+    pass show "$1" | grep -F "$2" | head -n1 | cut -d: -f2 | tr -d '\n'
+}
+
+switch-network() {
+    iwctl station wlan0 scan && \
+        while ! iwctl station wlan0 connect "$1"; do
+            sleep 1
+        done
+}
+
 
 alrm() {
   ( \speaker-test --frequency $1 --test sine )&
@@ -204,19 +211,33 @@ alrm() {
   \kill -9 $pid
 }
 
+go-fmt() {
+    gofmt -s -w **/*.go
+}
+
+pass-get-field() {
+    local filename="$1"
+    local field="$2"
+    pass show "$filename" | \
+        if [[ "$field" = 'pwd' ]] || [[ -z $field ]] ; then
+            head -n 1
+        else
+            grep -F "$field" | cut -d: -f2
+        fi | \
+        tr -d '\n'
+}
 
 # don't let python create __pycache__ or pyc files
 export PYTHONDONTWRITEBYTECODE=1
 
 #source ~/proj/luarocks-venv/lvenv.sh
 
-
-# gvm
-[[ -s "/home/etandel/.gvm/scripts/gvm" ]] && source "/home/etandel/.gvm/scripts/gvm"
+# ssh-agent socket env var
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 
 # ---- Beginning of project stuff ----
 
-FRAMENRC="$HOME/framen/src/framenrc.zsh"
-[[ -s "$FRAMENRC" ]] && source "$FRAMENRC"
+NINETYPOERC="$HOME/90poe/src/90poerc.zsh"
+[[ -s "$NINETYPOERC" ]] && source "$NINETYPOERC"
 
 # ---- End of project stuff ----
